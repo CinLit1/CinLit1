@@ -1,0 +1,2375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threads Through Time — Philippine Literature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #f6e6df;
+    --paper-dim: #efd6cb;
+    --ink: #2b1216;
+    --ink-soft: #5c2a2f;
+    --rust: #a83232;
+    --indigo: #7a1f2b;
+    --gold: #c9a227;
+    --olive: #6e2430;
+    --coral: #d1293d;
+    --line: #e3c2b6;
+    --plum: #5b3a8e;
+    --sidebar-w: 300px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- Layout shell ---------- */
+  .shell{
+    display:flex;
+    min-height: 100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--ink);
+    color: var(--paper-dim);
+    padding: 2.4rem 1.6rem 2rem;
+    position: sticky;
+    top:0;
+    height: 100vh;
+    overflow-y: auto;
+    display:flex;
+    flex-direction: column;
+    z-index: 20;
+    transition: margin-left 0.35s ease, opacity 0.25s ease;
+  }
+
+  .shell.sidebar-closed .sidebar{
+    margin-left: calc(var(--sidebar-w) * -1);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sidebar-toggle{
+    position: fixed;
+    top: 1.6rem;
+    left: calc(var(--sidebar-w) - 1.4rem);
+    z-index: 30;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: var(--ink);
+    color: var(--paper-dim);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    transition: left 0.35s ease, transform 0.35s ease, background 0.2s ease;
+    font-family: 'Inter', sans-serif;
+  }
+  .sidebar-toggle:hover{ background: var(--indigo); }
+
+  .shell.sidebar-closed .sidebar-toggle{
+    left: 1.4rem;
+  }
+
+  .sidebar-toggle svg{
+    width: 16px;
+    height: 16px;
+    transition: transform 0.35s ease;
+  }
+  .shell.sidebar-closed .sidebar-toggle svg{
+    transform: rotate(180deg);
+  }
+
+  .brand{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size: 1.5rem;
+    letter-spacing: 0.01em;
+    color: var(--paper);
+    line-height:1.25;
+    margin: 0 0 0.35rem;
+  }
+
+  .brand-sub{
+    font-family:'Inter', sans-serif;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    margin: 0 0 2.2rem;
+  }
+
+  nav.timeline{
+    position: relative;
+    margin-top: 0.5rem;
+  }
+
+  /* the connecting thread */
+  nav.timeline::before{
+    content:"";
+    position:absolute;
+    left: 11px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: linear-gradient(to bottom,
+      var(--paper-dim) 0%, var(--paper-dim) 100%);
+    opacity: 0.18;
+  }
+
+  .thread-svg{
+    position:absolute;
+    left:0; top:0;
+    width: 24px;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .nav-item{
+    position: relative;
+    display:flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 0.4rem 0.85rem 2.1rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    color: var(--paper-dim);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.86rem;
+    letter-spacing: 0.02em;
+    border-radius: 6px;
+    transition: background 0.25s ease, color 0.25s ease, padding-left 0.25s ease;
+  }
+
+  .nav-item .node{
+    position:absolute;
+    left: 3px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 2px solid var(--paper-dim);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+  }
+
+  .nav-item .era-label{
+    display:block;
+    font-family:'Inter', sans-serif;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    opacity: 0.6;
+    margin-bottom: 0.15rem;
+  }
+
+  .nav-item .title-label{
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--paper);
+  }
+
+  .nav-item:hover{
+    background: rgba(242,232,211,0.06);
+    padding-left: 2.3rem;
+  }
+
+  .nav-item.active{
+    background: rgba(242,232,211,0.09);
+  }
+
+  .nav-item.active .node{
+    opacity: 1;
+    box-shadow: 0 0 0 4px rgba(242,232,211,0.06);
+  }
+
+  .nav-item[data-accent="home"] .node{ border-color: var(--paper); background: var(--paper); }
+  .nav-item[data-accent="precolonial"].active .node,
+  .nav-item[data-accent="precolonial"]:hover .node{ border-color: var(--rust); background: var(--rust); }
+  .nav-item[data-accent="colonial"].active .node,
+  .nav-item[data-accent="colonial"]:hover .node{ border-color: var(--gold); background: var(--gold); }
+  .nav-item[data-accent="postcolonial"].active .node,
+  .nav-item[data-accent="postcolonial"]:hover .node{ border-color: var(--olive); background: var(--olive); }
+  .nav-item[data-accent="contemporary"].active .node,
+  .nav-item[data-accent="contemporary"]:hover .node{ border-color: var(--coral); background: var(--coral); }
+
+  .sidebar-foot{
+    margin-top: auto;
+    padding-top: 1.6rem;
+    font-family:'Inter', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    color: rgba(242,232,211,0.45);
+    border-top: 1px solid rgba(242,232,211,0.12);
+  }
+  .sidebar-foot strong{ color: rgba(242,232,211,0.7); }
+
+  /* ---------- Main content ---------- */
+  main{
+    flex: 1;
+    min-width: 0;
+    padding: 4.2rem 5.5rem 6rem;
+    position: relative;
+  }
+
+  .section{
+    display:none;
+    animation: rise 0.5s ease;
+  }
+  .section.visible{ display:block; }
+
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .eyebrow{
+    font-family:'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    font-weight:600;
+    margin-bottom: 0.9rem;
+    display:flex;
+    align-items:center;
+    gap: 0.6rem;
+  }
+  .eyebrow::before{
+    content:"";
+    display:inline-block;
+    width: 26px; height: 2px;
+    background: currentColor;
+  }
+
+  h1.page-title{
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(2.1rem, 3.4vw, 3.1rem);
+    line-height: 1.08;
+    margin: 0 0 1.1rem;
+    color: var(--ink);
+  }
+
+  .dates{
+    font-family:'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 2rem;
+    letter-spacing: 0.02em;
+  }
+
+  .weave-divider{
+    height: 14px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0.4rem 0 2.6rem;
+    background-image: repeating-linear-gradient(135deg, var(--divider-color, var(--ink)) 0 6px, transparent 6px 12px),
+                       repeating-linear-gradient(45deg, var(--divider-color, var(--ink)) 0 6px, transparent 6px 12px);
+    background-size: 12px 12px;
+    background-position: 0 0, 0 100%;
+    background-repeat: repeat-x;
+    background-position-y: 0, 7px;
+    opacity: 0.85;
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  }
+
+  .lede{
+    font-size: 1.12rem;
+    max-width: 62ch;
+    color: var(--ink-soft);
+    margin-bottom: 2.6rem;
+  }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.4rem;
+    margin: 2rem 0;
+  }
+
+  .card{
+    background: var(--paper-dim);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.6rem 1.7rem;
+    border-left: 4px solid var(--card-accent, var(--ink));
+  }
+
+  .card h3{
+    font-family:'Playfair Display', serif;
+    font-size: 1.15rem;
+    margin: 0 0 0.5rem;
+    color: var(--ink);
+  }
+
+  .card p{ margin:0; color: var(--ink-soft); font-size: 0.95rem; }
+
+  .works-list{
+    list-style:none;
+    margin: 0.6rem 0 0;
+    padding:0;
+  }
+  .works-list li{
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line);
+    display:flex;
+    gap: 1rem;
+    align-items:baseline;
+  }
+  .works-list li:last-child{ border-bottom:none; }
+  .works-list .work-title{
+    font-family:'Playfair Display', serif;
+    font-style: italic;
+    font-weight:600;
+    min-width: 220px;
+    color: var(--ink);
+  }
+  .works-list .work-note{ color: var(--ink-soft); font-size: 0.94rem; }
+
+  .theme-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 0.55rem;
+    margin: 1.6rem 0 0;
+  }
+  .theme-tags span{
+    font-family:'Inter', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid var(--tag-color, var(--ink));
+    color: var(--tag-color, var(--ink));
+  }
+
+  /* ---------- Home page ---------- */
+  .home-hero{
+    max-width: 780px;
+  }
+  .home-hero .eyebrow{ color: var(--rust); }
+
+  .home-hero h1{
+    font-family:'Playfair Display', serif;
+    font-weight: 800;
+    font-style: italic;
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    line-height: 1.08;
+    margin: 0 0 1.3rem;
+  }
+
+  .home-hero p.intro{
+    font-size: 1.14rem;
+    color: var(--ink-soft);
+    max-width: 60ch;
+  }
+
+  .submission-strip{
+    margin: 2.6rem 0 3.2rem;
+    padding: 1.1rem 1.5rem;
+    background: var(--ink);
+    color: var(--paper-dim);
+    border-radius: 4px;
+    display:flex;
+    flex-wrap:wrap;
+    gap: 0.5rem 2.2rem;
+    font-family:'Inter', sans-serif;
+    font-size: 0.86rem;
+  }
+  .submission-strip b{ color: var(--gold); font-weight:600; }
+
+  .members-heading{
+    font-family:'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight:700;
+    margin: 0 0 0.3rem;
+  }
+  .members-sub{
+    font-family:'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .members-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 1.1rem;
+  }
+
+  .member-card{
+    background: var(--paper-dim);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.3rem 1.3rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .member-card::before{
+    content: attr(data-index);
+    position:absolute;
+    right: -6px; top: -18px;
+    font-family:'Playfair Display', serif;
+    font-weight: 800;
+    font-size: 3.6rem;
+    color: var(--ink);
+    opacity: 0.05;
+  }
+  .member-card .m-name{
+    font-family:'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--ink);
+    position: relative;
+  }
+  .member-card .m-role{
+    font-family:'Inter', sans-serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--rust);
+    margin-top: 0.35rem;
+    position:relative;
+  }
+
+  .home-timeline-preview{
+    margin-top: 3.2rem;
+  }
+  .htp-track{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+  .htp-item{
+    border-top: 3px solid var(--htp-accent, var(--ink));
+    padding-top: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .htp-item:hover{ transform: translateY(-3px); }
+  .htp-item .htp-era{
+    font-family:'Inter', sans-serif;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+  .htp-item .htp-title{
+    font-family:'Playfair Display', serif;
+    font-weight:600;
+    font-size: 1.02rem;
+    margin-top: 0.3rem;
+    color: var(--ink);
+  }
+
+  /* ---------- Filled example card (opens the reading modal) ---------- */
+  .example-card.filled{
+    border-style: solid;
+    background: var(--paper);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .example-card.filled:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(43,18,22,0.1);
+  }
+  .example-card.filled .ex-title{
+    color: var(--ink);
+    opacity: 1;
+  }
+  .example-card.filled .ex-note{
+    opacity: 0.85;
+  }
+  .example-card.filled .ex-plus{
+    border-style: solid;
+    opacity: 1;
+  }
+  .ex-byline{
+    font-family:'Inter', sans-serif;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ex-accent, var(--ink));
+    opacity: 0.8;
+  }
+
+  /* ---------- Reading modal ---------- */
+  .modal-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(20,8,10,0.55);
+    backdrop-filter: blur(2px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 2rem 1.2rem;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.open{
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-card{
+    background: var(--paper);
+    border-radius: 8px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 84vh;
+    overflow-y: auto;
+    padding: 2.4rem 2.6rem 2.8rem;
+    position: relative;
+    transform: translateY(16px);
+    transition: transform 0.3s ease;
+  }
+  .modal-overlay.open .modal-card{ transform: translateY(0); }
+  .modal-close{
+    position: sticky;
+    top: 0;
+    float: right;
+    margin: -0.4rem -0.6rem 0.5rem 0.5rem;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--paper-dim);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .modal-close:hover{ background: var(--line); }
+  .modal-eyebrow{
+    font-family:'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.68rem;
+    font-weight:600;
+    color: var(--coral);
+    margin-bottom: 0.6rem;
+  }
+  .modal-card h2{
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+    clear: both;
+  }
+  .modal-card .modal-sub{
+    font-family:'Inter', sans-serif;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.6rem;
+  }
+  .blog-post p{
+    margin: 0 0 1.2rem;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+  .blog-post p:first-of-type::first-letter{
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: 2.8rem;
+    line-height: 0.75;
+    float: left;
+    padding: 0.08rem 0.45rem 0 0;
+    color: var(--coral);
+  }
+  .blog-post h4{
+    font-family:'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ink);
+    opacity: 0.65;
+    margin: 1.6rem 0 0.6rem;
+  }
+  .blog-post h4:first-child{ margin-top: 0; }
+  .blog-source{
+    margin-top: 1.8rem;
+    padding: 1rem 1.3rem;
+    background: var(--paper-dim);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--coral);
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+  .blog-source .bs-label{
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: var(--coral);
+    display:block;
+    margin-bottom: 0.4rem;
+  }
+  .blog-source a{
+    color: var(--indigo);
+    text-decoration: underline;
+    word-break: break-word;
+  }
+  .blog-source div{ margin-bottom: 0.2rem; }
+  .blog-source div:last-child{ margin-bottom: 0; }
+
+  /* ---------- Poem modal (fullscreen iframe viewer) ---------- */
+  .modal-overlay.poem-modal .modal-card{
+    max-width: 920px;
+    width: 94vw;
+    height: 88vh;
+    max-height: 88vh;
+    padding: 0;
+    overflow: hidden;
+    background: #06070f;
+  }
+  .poem-modal .modal-close{
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    float: none;
+    margin: 0;
+    z-index: 5;
+    background: rgba(246,230,223,0.9);
+  }
+  .poem-frame{
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  .poem-loading{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: rgba(242,236,221,0.6);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px){
+    .shell{ flex-direction: column; }
+    .sidebar{
+      width: 100%;
+      height: auto;
+      max-height: 1200px;
+      position: relative;
+      padding: 1.6rem 1.3rem;
+      margin-left: 0 !important;
+      overflow: hidden;
+      transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+    }
+    .shell.sidebar-closed .sidebar{
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
+    }
+    .sidebar-toggle{
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+    }
+    .shell.sidebar-closed .sidebar-toggle{ left: 1rem; }
+    nav.timeline::before{ display:none; }
+    .nav-item{ padding-left: 2.6rem; }
+    main{ padding: 4.2rem 1.5rem 4rem; }
+    .htp-track{ grid-template-columns: repeat(2, 1fr); }
+  }
+
+  :focus-visible{
+    outline: 2px solid var(--indigo);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Placeholder examples ---------- */
+  .examples-block{
+    margin-top: 3rem;
+  }
+  .examples-block h3{
+    font-family:'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin: 0 0 0.3rem;
+    color: var(--ink);
+  }
+  .examples-sub{
+    font-family:'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.4rem;
+  }
+  .examples-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.1rem;
+  }
+  .example-card{
+    border: 1.5px dashed var(--ex-accent, var(--ink));
+    border-radius: 6px;
+    padding: 1.3rem 1.3rem 1.4rem;
+    background: rgba(242,232,211,0.4);
+    min-height: 150px;
+    display:flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .example-card .ex-num{
+    font-family:'Inter', sans-serif;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ex-accent, var(--ink));
+    font-weight: 600;
+  }
+  .example-card .ex-title{
+    font-family:'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    opacity: 0.6;
+  }
+  .example-card .ex-note{
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    opacity: 0.55;
+    flex: 1;
+  }
+  .example-card .ex-plus{
+    align-self: flex-start;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1.5px dashed var(--ex-accent, var(--ink));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ex-accent, var(--ink));
+    opacity: 0.7;
+    margin-top: 0.2rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="shell" id="shell">
+
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </button>
+
+  <aside class="sidebar">
+    <p class="brand">Threads Through Time</p>
+    <p class="brand-sub">Philippine Literature, Era by Era</p>
+
+    <nav class="timeline" aria-label="Literary periods">
+      <button class="nav-item active" data-target="home" data-accent="home">
+        <span class="node"></span>
+        <span>
+          <span class="era-label">Start here</span>
+          <span class="title-label">Home &amp; Group</span>
+        </span>
+      </button>
+
+      <button class="nav-item" data-target="precolonial" data-accent="precolonial">
+        <span class="node"></span>
+        <span>
+          <span class="era-label">Before 1565</span>
+          <span class="title-label">Pre-Colonial Literature</span>
+        </span>
+      </button>
+
+      <button class="nav-item" data-target="colonial" data-accent="colonial">
+        <span class="node"></span>
+        <span>
+          <span class="era-label">1565 – 1898</span>
+          <span class="title-label">Colonial Literature</span>
+        </span>
+      </button>
+
+      <button class="nav-item" data-target="postcolonial" data-accent="postcolonial">
+        <span class="node"></span>
+        <span>
+          <span class="era-label">1898 – 1960s</span>
+          <span class="title-label">Post-Colonial Literature</span>
+        </span>
+      </button>
+
+      <button class="nav-item" data-target="contemporary" data-accent="contemporary">
+        <span class="node"></span>
+        <span>
+          <span class="era-label">21st Century</span>
+          <span class="title-label">Contemporary / Present</span>
+        </span>
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div><strong>GRPMHS</strong> — Main Section Socrates</div>
+      <div>Grade 12, Group 4</div>
+    </div>
+  </aside>
+
+  <main>
+
+    <!-- HOME -->
+    <section class="section visible" id="home">
+      <div class="home-hero">
+        <p class="eyebrow">GRPMHS · Main Section Socrates · Grade 12 · Group 4</p>
+        <h1>Four Eras, One Continuing Story</h1>
+        <p class="intro">Philippine literature did not begin with a single book — it began with voices around a fire,
+          continued through borrowed scripts and imposed tongues, and carries on today across
+          screens and stages. This site walks through four eras of that story: pre-colonial,
+          colonial, post-colonial, and the present. Use the sidebar to move through time.</p>
+      </div>
+
+      <div class="submission-strip">
+        <span><b>Submitted to</b> Maam Marester Lopez</span>
+        <span><b>Group</b> GRPMHS — Main Section Socrates, Grade 12, Group 4</span>
+      </div>
+
+      <div class="weave-divider" style="--divider-color: var(--rust);"></div>
+
+      <h2 class="members-heading">Group Members</h2>
+      <p class="members-sub">The six of us researched, wrote, and built this site together.</p>
+
+      <div class="members-grid">
+        <div class="member-card" data-index="01">
+          <div class="m-name">Renzel Polilan</div>
+          <div class="m-role">Group Member</div>
+        </div>
+        <div class="member-card" data-index="02">
+          <div class="m-name">Christine Salazar</div>
+          <div class="m-role">Group Member</div>
+        </div>
+        <div class="member-card" data-index="03">
+          <div class="m-name">Mikaela Aguinaldo</div>
+          <div class="m-role">Group Member</div>
+        </div>
+        <div class="member-card" data-index="04">
+          <div class="m-name">Jamella Casabuena</div>
+          <div class="m-role">Group Member</div>
+        </div>
+        <div class="member-card" data-index="05">
+          <div class="m-name">Arrene Realino</div>
+          <div class="m-role">Group Member</div>
+        </div>
+        <div class="member-card" data-index="06">
+          <div class="m-name">Mark Betantis</div>
+          <div class="m-role">Group Member</div>
+        </div>
+      </div>
+
+      <div class="home-timeline-preview">
+        <h2 class="members-heading">Jump to an Era</h2>
+        <div class="htp-track">
+          <div class="htp-item" data-target="precolonial" style="--htp-accent: var(--rust);">
+            <div class="htp-era">Before 1565</div>
+            <div class="htp-title">Pre-Colonial</div>
+          </div>
+          <div class="htp-item" data-target="colonial" style="--htp-accent: var(--gold);">
+            <div class="htp-era">1565–1898</div>
+            <div class="htp-title">Colonial</div>
+          </div>
+          <div class="htp-item" data-target="postcolonial" style="--htp-accent: var(--olive);">
+            <div class="htp-era">1898–1960s</div>
+            <div class="htp-title">Post-Colonial</div>
+          </div>
+          <div class="htp-item" data-target="contemporary" style="--htp-accent: var(--coral);">
+            <div class="htp-era">21st Century</div>
+            <div class="htp-title">Contemporary</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRE-COLONIAL -->
+    <section class="section" id="precolonial">
+      <p class="eyebrow" style="color: var(--rust);">Era I</p>
+      <h1 class="page-title">Pre-Colonial Literature</h1>
+      <p class="dates">Before 1565 — the age of oral tradition</p>
+      <div class="weave-divider" style="--divider-color: var(--rust);"></div>
+
+      <p class="lede">Long before any foreign script reached the archipelago, Filipino communities already had
+        a rich literary life — it simply lived in the voice, not on the page. Epics, chants, riddles,
+        and proverbs were memorized and passed from elder to child, carrying a community's history,
+        beliefs, and values across generations. These works served not only as entertainment but as a way
+        of educating the community, preserving cultural heritage, and strengthening shared social values —
+        making this era the foundation of Philippine literary history.</p>
+
+      <div class="card-grid">
+        <div class="card" style="--card-accent: var(--rust);">
+          <h3>Oral Epics (Folk Epics)</h3>
+          <p>Long narrative poems, chanted or sung, recounting the deeds of legendary heroes and the
+            origins of a people. Performed during rituals, harvests, or communal gatherings.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--rust);">
+          <h3>Bugtong &amp; Salawikain</h3>
+          <p>Riddles (bugtong) and proverbs (salawikain) encoded practical wisdom and wit into short,
+            memorable verse — a form of everyday teaching.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--rust);">
+          <h3>Myths &amp; Legends</h3>
+          <p>Stories explaining the origin of the world, natural phenomena, and the anito (spirits),
+            reflecting an animist worldview shared across many ethnic groups.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--rust);">
+          <h3>Baybayin</h3>
+          <p>An indigenous syllabic script used before colonization, mostly for short inscriptions and
+            personal writing rather than long literary works — literature here still lived mainly in speech.</p>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Playfair Display', serif; margin-top: 2.4rem;">Characteristics of Pre-Colonial Literature</h3>
+      <ul class="works-list">
+        <li><span class="work-title">Oral Tradition</span><span class="work-note">Literary works were passed down by word of mouth through storytelling, chanting, and singing.</span></li>
+        <li><span class="work-title">Community-Based</span><span class="work-note">Stories were shared during gatherings, rituals, festivals, and other community events.</span></li>
+        <li><span class="work-title">Rich in Folklore</span><span class="work-note">Included epics, myths, legends, folktales, riddles (bugtong), proverbs (salawikain), and folk songs.</span></li>
+        <li><span class="work-title">Reflects Beliefs &amp; Traditions</span><span class="work-note">Literature expressed the customs, values, religious beliefs, and daily lives of early Filipinos.</span></li>
+        <li><span class="work-title">Anonymous Authorship</span><span class="work-note">Most works had no known authors because they were created and preserved collectively by communities.</span></li>
+        <li><span class="work-title">Use of Native Languages</span><span class="work-note">Literary works were composed in indigenous languages and dialects.</span></li>
+        <li><span class="work-title">Moral &amp; Educational Purpose</span><span class="work-note">Stories taught important values such as courage, respect, honesty, unity, and wisdom.</span></li>
+        <li><span class="work-title">Connected to Nature &amp; Spirituality</span><span class="work-note">Many works featured natural elements, ancestral spirits, gods, and supernatural beings, reflecting the worldview of pre-colonial Filipinos.</span></li>
+      </ul>
+
+      <h3 style="font-family:'Playfair Display', serif; margin-top: 2.4rem;">Notable Epics</h3>
+      <ul class="works-list">
+        <li><span class="work-title">Biag ni Lam-ang</span><span class="work-note">Ilocano epic of a hero's extraordinary birth, adventures, and revenge — first transcribed by the blind Ilocano bard Pedro Bukaneg.</span></li>
+        <li><span class="work-title">Hinilawod</span><span class="work-note">Epic of the Sulodnon people of Panay, following the adventures of three demigod brothers; documented in the field by anthropologist F. Landa Jocano.</span></li>
+        <li><span class="work-title">Hudhud &amp; Alim</span><span class="work-note">Chanted narrative poetry of the Ifugao, recited by mumbaki (ritual chanters) during harvest and ritual occasions.</span></li>
+        <li><span class="work-title">Darangen</span><span class="work-note">Epic cycle of the Maranao people of Lake Lanao, telling of the hero Bantugan; studied and preserved by folklorist Mamitua Saber.</span></li>
+        <li><span class="work-title">Ulahingan</span><span class="work-note">Epic tradition of the Manobo people of Mindanao, recorded and translated by scholar Elena Maquiso.</span></li>
+      </ul>
+
+      <div class="theme-tags">
+        <span style="--tag-color: var(--rust);">Oral tradition</span>
+        <span style="--tag-color: var(--rust);">Community &amp; kinship</span>
+        <span style="--tag-color: var(--rust);">Nature &amp; the anito</span>
+        <span style="--tag-color: var(--rust);">Heroism</span>
+      </div>
+
+      <div class="examples-block">
+        <h3>Our Examples</h3>
+        <p class="examples-sub">Space reserved for pre-colonial literature examples we create or collect ourselves.</p>
+        <div class="examples-grid">
+          <div class="example-card filled precolonial-work" style="--ex-accent: var(--rust);" data-work="lamang" tabindex="0" role="button" aria-haspopup="dialog">
+            <span class="ex-num">Example 01</span>
+            <span class="ex-plus">↗</span>
+            <span class="ex-byline">Epic · Ilocos Region</span>
+            <span class="ex-title" style="font-style: normal;">Biag ni Lam-ang</span>
+            <span class="ex-note">The Ilocano epic of a hero's extraordinary birth, journey to avenge his father, and courtship of Ines Kannoyan. Click to read the background, summary, and significance.</span>
+          </div>
+          <div class="example-card filled precolonial-work" style="--ex-accent: var(--rust);" data-work="malakas" tabindex="0" role="button" aria-haspopup="dialog">
+            <span class="ex-num">Example 02</span>
+            <span class="ex-plus">↗</span>
+            <span class="ex-byline">Myth · Tagalog (Luzon)</span>
+            <span class="ex-title" style="font-style: normal;">The Story of Malakas and Maganda</span>
+            <span class="ex-note">The creation myth of the first man and woman, born from a bamboo stalk struck open by a kite caught between the quarreling Sky and Sea. Click to read more.</span>
+          </div>
+          <div class="example-card filled precolonial-work" style="--ex-accent: var(--rust);" data-work="monkeyturtle" tabindex="0" role="button" aria-haspopup="dialog">
+            <span class="ex-num">Example 03</span>
+            <span class="ex-plus">↗</span>
+            <span class="ex-byline">Folktale · Various regions</span>
+            <span class="ex-title" style="font-style: normal;">The Monkey and the Turtle</span>
+            <span class="ex-note">An animal folktale of a shared banana tree, betrayal, and clever revenge, later popularized in writing by José Rizal. Click to read the full tale.</span>
+          </div>
+          <div class="example-card filled precolonial-work" style="--ex-accent: var(--rust);" data-work="mariamakiling" tabindex="0" role="button" aria-haspopup="dialog">
+            <span class="ex-num">Example 04</span>
+            <span class="ex-plus">↗</span>
+            <span class="ex-byline">Legend · Laguna, Luzon</span>
+            <span class="ex-title" style="font-style: normal;">The Legend of Maria Makiling</span>
+            <span class="ex-note">The legend of the diwata of Mount Makiling, her kindness toward the townsfolk, her love for Juan, and the curse she placed after his unjust death. Click to read more.</span>
+          </div>
+          <div class="example-card filled precolonial-work" style="--ex-accent: var(--rust);" data-work="leron" tabindex="0" role="button" aria-haspopup="dialog">
+            <span class="ex-num">Example 05</span>
+            <span class="ex-plus">↗</span>
+            <span class="ex-byline">Folksong · Tagalog region</span>
+            <span class="ex-title" style="font-style: normal;">Leron, Leron Sinta</span>
+            <span class="ex-note">A traditional Tagalog folk song blending fruit-gathering imagery with courtship, rooted in the agricultural life of early rural communities. Click to read more.</span>
+          </div>
+          <div class="example-card" style="--ex-accent: var(--rust);"><span class="ex-num">Example 06</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLONIAL -->
+    <section class="section" id="colonial">
+      <p class="eyebrow" style="color: var(--gold);">Era II</p>
+      <h1 class="page-title">Colonial Literature</h1>
+      <p class="dates">1565 – 1898 — Spanish colonial period</p>
+      <div class="weave-divider" style="--divider-color: var(--gold);"></div>
+
+      <p class="lede">Spanish colonization brought the printing press, the Catholic faith, and new literary
+        forms — but for most of this period, literature was tightly bound to religion and used to
+        teach doctrine. Only near the end of the era did Filipino writers turn literature into a tool
+        for reform and, eventually, revolution.</p>
+
+      <div class="card-grid">
+        <div class="card" style="--card-accent: var(--gold);">
+          <h3>Religious &amp; Didactic Works</h3>
+          <p>Doctrina Christiana (1593), the first book printed in the Philippines, taught Catholic
+            doctrine in Tagalog and Spanish, setting the tone for early printed literature.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--gold);">
+          <h3>Pasyon</h3>
+          <p>A long chanted narrative poem on the life, passion, and death of Jesus Christ, still
+            performed by communities during Holy Week.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--gold);">
+          <h3>Awit &amp; Korido</h3>
+          <p>Metrical romances in verse, often about knights and princesses, blending European
+            chivalric tales with local sensibilities.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--gold);">
+          <h3>Propaganda Literature</h3>
+          <p>Late in the era, writers used essays, novels, and newspapers abroad to expose colonial
+            abuses and call for reform — literature became political.</p>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Playfair Display', serif; margin-top: 2.4rem;">Notable Works &amp; Writers</h3>
+      <ul class="works-list">
+        <li><span class="work-title">Florante at Laura</span><span class="work-note">Francisco Balagtas (1838) — an awit widely considered the height of Tagalog verse.</span></li>
+        <li><span class="work-title">Ibong Adarna</span><span class="work-note">Anonymous korido about a magical bird and three princes' quest.</span></li>
+        <li><span class="work-title">Urbana at Feliza</span><span class="work-note">Fr. Modesto de Castro (1864) — a didactic novel in letters teaching manners and morals to Filipino youth.</span></li>
+        <li><span class="work-title">Noli Me Tangere &amp; El Filibusterismo</span><span class="work-note">José Rizal (1887 / 1891) — novels exposing colonial injustice, central to the Propaganda Movement.</span></li>
+        <li><span class="work-title">La Solidaridad</span><span class="work-note">Reformist newspaper featuring Graciano López Jaena and Marcelo H. del Pilar, published from Spain.</span></li>
+      </ul>
+
+      <div class="theme-tags">
+        <span style="--tag-color: var(--gold);">Faith &amp; doctrine</span>
+        <span style="--tag-color: var(--gold);">Chivalric romance</span>
+        <span style="--tag-color: var(--gold);">Reform &amp; awakening nationalism</span>
+      </div>
+
+      <div class="examples-block">
+        <h3>Our Examples</h3>
+        <p class="examples-sub">Space reserved for colonial-era literature examples we create or collect ourselves.</p>
+        <div class="examples-grid">
+          <div class="example-card" style="--ex-accent: var(--gold);"><span class="ex-num">Example 01</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--gold);"><span class="ex-num">Example 02</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--gold);"><span class="ex-num">Example 03</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--gold);"><span class="ex-num">Example 04</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--gold);"><span class="ex-num">Example 05</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--gold);"><span class="ex-num">Example 06</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POST-COLONIAL -->
+    <section class="section" id="postcolonial">
+      <p class="eyebrow" style="color: var(--olive);">Era III</p>
+      <h1 class="page-title">Post-Colonial Literature</h1>
+      <p class="dates">1898 – 1960s — American Occupation, Commonwealth, and early Independence</p>
+      <div class="weave-divider" style="--divider-color: var(--olive);"></div>
+
+      <p class="lede">After Spain came the United States, and with it, English-language education and a
+        free press. Filipino writers now had a new language to master and a new question to answer:
+        what does it mean to write as a Filipino, in someone else's tongue, in a nation still finding
+        its footing?</p>
+
+      <div class="card-grid">
+        <div class="card" style="--card-accent: var(--olive);">
+          <h3>Literature in English</h3>
+          <p>Public education introduced English widely, and a generation of Filipino writers began
+            producing poetry, short stories, and essays in the language for the first time.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--olive);">
+          <h3>Balagtasan</h3>
+          <p>A poetic debate in verse, named after Francisco Balagtas, continuing the Tagalog oral
+            tradition alongside the new English-language writing.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--olive);">
+          <h3>Occupation-Era Writing</h3>
+          <p>During the Japanese Occupation (1941–45), open publishing was restricted, pushing some
+            literary expression underground or into allegory.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--olive);">
+          <h3>Diaspora Voices</h3>
+          <p>Filipino writers abroad began documenting migrant labor and identity, a theme that would
+            only grow in later decades.</p>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Playfair Display', serif; margin-top: 2.4rem;">Notable Writers</h3>
+      <ul class="works-list">
+        <li><span class="work-title">José García Villa</span><span class="work-note">Poet known for experimental style and his "comma poems"; among the first Filipino writers recognized internationally.</span></li>
+        <li><span class="work-title">Nick Joaquín</span><span class="work-note">Fiction and essays exploring Filipino identity across Spanish and American influence.</span></li>
+        <li><span class="work-title">Carlos Bulosan</span><span class="work-note">America Is in the Heart — a memoir-novel of Filipino migrant labor in the United States.</span></li>
+        <li><span class="work-title">Amado V. Hernández</span><span class="work-note">Poet, novelist, and labor leader; Mga Ibong Mandaragit critiques social injustice in the post-independence years.</span></li>
+        <li><span class="work-title">N.V.M. Gonzalez &amp; Bienvenido Santos</span><span class="work-note">Fiction writers portraying rural life and the overseas Filipino experience.</span></li>
+      </ul>
+
+      <div class="theme-tags">
+        <span style="--tag-color: var(--olive);">Identity in a new language</span>
+        <span style="--tag-color: var(--olive);">Nationhood</span>
+        <span style="--tag-color: var(--olive);">Migration</span>
+      </div>
+
+      <div class="examples-block">
+        <h3>Our Examples</h3>
+        <p class="examples-sub">Space reserved for post-colonial literature examples we create or collect ourselves.</p>
+        <div class="examples-grid">
+          <div class="example-card" style="--ex-accent: var(--olive);"><span class="ex-num">Example 01</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--olive);"><span class="ex-num">Example 02</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--olive);"><span class="ex-num">Example 03</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--olive);"><span class="ex-num">Example 04</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--olive);"><span class="ex-num">Example 05</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--olive);"><span class="ex-num">Example 06</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTEMPORARY -->
+    <section class="section" id="contemporary">
+      <p class="eyebrow" style="color: var(--coral);">Era IV</p>
+      <h1 class="page-title">21st Century — Contemporary / Present</h1>
+      <p class="dates">2000s – today</p>
+      <div class="weave-divider" style="--divider-color: var(--coral);"></div>
+
+      <p class="lede">Today's Filipino literature is everywhere at once — in bookstores, in webnovels,
+        in spoken-word videos, and in captions typed in Taglish. The page has not disappeared; it has
+        multiplied, and Filipino writers are using every version of it.</p>
+
+      <div class="card-grid">
+        <div class="card" style="--card-accent: var(--coral);">
+          <h3>Digital &amp; Self-Publishing</h3>
+          <p>Platforms for online serialized fiction and social media have let writers publish directly
+            to readers, bypassing traditional gatekeepers.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--coral);">
+          <h3>Spoken Word &amp; Performance</h3>
+          <p>Live poetry communities have brought literature back to its oral roots, this time performed
+            on stage and shared online.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--coral);">
+          <h3>Komiks &amp; Graphic Novels</h3>
+          <p>A revival of Filipino comics and graphic storytelling, blending visual art with narrative
+            tradition.</p>
+        </div>
+        <div class="card" style="--card-accent: var(--coral);">
+          <h3>Wider, Bolder Themes</h3>
+          <p>Contemporary writers take on overseas labor, LGBTQ+ identity, martial law memory, urban
+            life, and climate — often in Taglish, mixing Filipino and English freely.</p>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Playfair Display', serif; margin-top: 2.4rem;">Notable Contemporary Voices</h3>
+      <ul class="works-list">
+        <li><span class="work-title">Bob Ong</span><span class="work-note">Pseudonymous author known for humorous, conversational Filipino-language prose.</span></li>
+        <li><span class="work-title">Ricky Lee</span><span class="work-note">Prolific screenwriter and novelist, influential in both film and contemporary fiction.</span></li>
+        <li><span class="work-title">Lualhati Bautista</span><span class="work-note">Novelist known for Dekada '70 and Gapô, tackling family, martial law, and gender with unflinching realism.</span></li>
+        <li><span class="work-title">Online &amp; independent poets</span><span class="work-note">A growing wave of self-published poets and spoken-word artists reaching audiences directly online.</span></li>
+      </ul>
+
+      <div class="theme-tags">
+        <span style="--tag-color: var(--coral);">Diaspora &amp; OFW life</span>
+        <span style="--tag-color: var(--coral);">Identity &amp; belonging</span>
+        <span style="--tag-color: var(--coral);">Taglish &amp; new forms</span>
+      </div>
+
+      <div class="examples-block">
+        <h3>Our Examples</h3>
+        <p class="examples-sub">Space reserved for contemporary literature examples we create or collect ourselves.</p>
+        <div class="examples-grid">
+          <div class="example-card filled" style="--ex-accent: var(--coral);" id="blogExampleCard" tabindex="0" role="button" aria-haspopup="dialog">
+            <span class="ex-num">Example 01</span>
+            <span class="ex-plus">↗</span>
+            <span class="ex-byline">Personal blog · student writing</span>
+            <span class="ex-title" style="font-style: normal;">A Little Story About My Everyday Life</span>
+            <span class="ex-note">A reflective personal blog post on student life, friendship, and small everyday moments — an example of how the diary/blog form carries on the confessional, first-person voice of contemporary writing. Click to read.</span>
+          </div>
+          <div class="example-card filled" style="--ex-accent: var(--coral);" id="poemExampleCard" tabindex="0" role="button" aria-haspopup="dialog">
+            <span class="ex-num">Example 02</span>
+            <span class="ex-plus">↗</span>
+            <span class="ex-byline">Hyperpoetry · interactive poem</span>
+            <span class="ex-title" style="font-style: normal;">The Last Promise</span>
+            <span class="ex-note">A scroll-driven digital poem where the moon itself waxes and wanes with the poem's emotional arc, and broken promises can be clicked open. An example of how contemporary Filipino and diaspora writers are pushing poetry into interactive, born-digital forms. Click to open.</span>
+          </div>
+          <div class="example-card" style="--ex-accent: var(--coral);"><span class="ex-num">Example 03</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--coral);"><span class="ex-num">Example 04</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--coral);"><span class="ex-num">Example 05</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+          <div class="example-card" style="--ex-accent: var(--coral);"><span class="ex-num">Example 06</span><span class="ex-plus">+</span><span class="ex-title">Title placeholder</span><span class="ex-note">Add your example and short description here.</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Reading modal for the featured example -->
+<div class="modal-overlay" id="blogModal" role="dialog" aria-modal="true" aria-labelledby="blogModalTitle">
+  <div class="modal-card">
+    <button class="modal-close" id="blogModalClose" aria-label="Close">✕</button>
+    <p class="modal-eyebrow">Contemporary · Example 01</p>
+    <h2 id="blogModalTitle">A Little Story About My Everyday Life</h2>
+    <p class="modal-sub">A Personal Blog</p>
+
+    <div class="blog-post">
+      <p>Have you ever had one of those days when everything feels tiring, but somehow you still end up laughing with your friends? I experience days like that a lot as a student.</p>
+
+      <p>My usual day starts with getting ready for school. Sometimes, I feel sleepy and do not feel like getting up, especially when I know that I have a lot of things to do. But once I get to school and see my friends, my mood usually gets better.</p>
+
+      <p>Being a student is not always easy. There are assignments, activities, deadlines, and lessons that sometimes make me feel stressed. There are also times when I feel pressured because I want to do my best. Even when I get tired, I remind myself that these things are part of my journey as a student.</p>
+
+      <p>One thing that makes my school days better is spending time with my friends. We talk about random things, laugh at simple jokes, and share stories about what happened during our day. Sometimes, we do not even have to do anything special. Just being together can already make a tiring day more enjoyable.</p>
+
+      <p>As I experience these things, I have realized that life is not always about big achievements or exciting moments. Sometimes, the small things matter too. A simple conversation, a funny moment, or even a normal day can become a memory that I will remember someday.</p>
+
+      <p>I also learned that it is okay to have bad days. There are times when I make mistakes or things do not happen the way I want them to. Instead of being too hard on myself, I try to learn from what happened and move forward.</p>
+
+      <p>For me, blogging is a good way to share these thoughts. It feels like writing in a journal, but instead of keeping everything to myself, I can share my experiences and perspective with other people. I can write about my everyday life, the things I enjoy, the challenges I face, and the lessons I learn along the way.</p>
+
+      <p>I may still have a lot to learn, but I know that every experience is helping me grow. I do not know exactly what my future will look like, but I want to appreciate the present and enjoy the little moments while I can.</p>
+
+      <p>Maybe someday, when I read this again, I will realize how much I have changed. For now, I will continue making memories, learning from my experiences, and writing down the little stories that make my life meaningful.</p>
+
+      <div class="blog-source">
+        <span class="bs-label">Source / Reference</span>
+        <div>Example Blog: Elle's Blog</div>
+        <div>Reference: <a href="https://ellesblog503420838.wordpress.com/" target="_blank" rel="noopener noreferrer">https://ellesblog503420838.wordpress.com/</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reading modal for the hyperpoem example -->
+<div class="modal-overlay poem-modal" id="poemModal" role="dialog" aria-modal="true" aria-label="The Last Promise — interactive poem">
+  <div class="modal-card">
+    <button class="modal-close" id="poemModalClose" aria-label="Close">✕</button>
+    <p class="poem-loading" id="poemLoading">opening the poem…</p>
+    <iframe class="poem-frame" id="poemFrame" title="The Last Promise — an interactive hyperpoem"></iframe>
+  </div>
+</div>
+
+<!-- Reading modal for pre-colonial work examples -->
+<div class="modal-overlay" id="workModal" role="dialog" aria-modal="true" aria-labelledby="workModalTitle">
+  <div class="modal-card">
+    <button class="modal-close" id="workModalClose" aria-label="Close">✕</button>
+    <p class="modal-eyebrow" id="workModalEyebrow" style="color: var(--rust);">Pre-Colonial · Example 01</p>
+    <h2 id="workModalTitle">Title</h2>
+    <p class="modal-sub" id="workModalSub">Type · Region</p>
+    <div class="blog-post" id="workModalBody"></div>
+  </div>
+</div>
+
+<script>
+
+  const navItems = document.querySelectorAll('.nav-item');
+  const previewItems = document.querySelectorAll('.htp-item');
+  const sections = document.querySelectorAll('.section');
+  const shell = document.getElementById('shell');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+
+  sidebarToggle.addEventListener('click', () => {
+    const closed = shell.classList.toggle('sidebar-closed');
+    sidebarToggle.setAttribute('aria-expanded', String(!closed));
+  });
+
+  function showSection(target){
+    sections.forEach(s => s.classList.toggle('visible', s.id === target));
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.target === target));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  navItems.forEach(btn => {
+    btn.addEventListener('click', () => showSection(btn.dataset.target));
+  });
+
+  previewItems.forEach(item => {
+    item.addEventListener('click', () => showSection(item.dataset.target));
+  });
+
+  const blogCard = document.getElementById('blogExampleCard');
+  const blogModal = document.getElementById('blogModal');
+  const blogModalClose = document.getElementById('blogModalClose');
+
+  function openBlogModal(){
+    blogModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    blogModalClose.focus();
+  }
+  function closeBlogModal(){
+    blogModal.classList.remove('open');
+    document.body.style.overflow = '';
+    blogCard.focus();
+  }
+
+  if(blogCard){
+    blogCard.addEventListener('click', openBlogModal);
+    blogCard.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openBlogModal(); }
+    });
+  }
+  blogModalClose.addEventListener('click', closeBlogModal);
+  blogModal.addEventListener('click', (e) => { if(e.target === blogModal) closeBlogModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && blogModal.classList.contains('open')) closeBlogModal();
+  });
+
+  // ---------- Poem modal (Example 02) ----------
+  const poemCard = document.getElementById('poemExampleCard');
+  const poemModal = document.getElementById('poemModal');
+  const poemModalClose = document.getElementById('poemModalClose');
+  const poemFrame = document.getElementById('poemFrame');
+  const poemLoading = document.getElementById('poemLoading');
+  let poemLoaded = false;
+
+  function openPoemModal(){
+    poemModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if(!poemLoaded){
+      poemFrame.srcdoc = POEM_HTML;
+      poemLoaded = true;
+      poemFrame.addEventListener('load', () => { poemLoading.style.display = 'none'; }, { once: true });
+    }
+    poemModalClose.focus();
+  }
+  function closePoemModal(){
+    poemModal.classList.remove('open');
+    document.body.style.overflow = '';
+    poemCard.focus();
+  }
+
+  if(poemCard){
+    poemCard.addEventListener('click', openPoemModal);
+    poemCard.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openPoemModal(); }
+    });
+  }
+  poemModalClose.addEventListener('click', closePoemModal);
+  poemModal.addEventListener('click', (e) => { if(e.target === poemModal) closePoemModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && poemModal.classList.contains('open')) closePoemModal();
+  });
+
+  // ---------- Pre-colonial work examples (Examples 01–05) ----------
+  const PRECOLONIAL_WORKS = {
+    lamang: {
+      num: "Example 01",
+      title: "Biag ni Lam-ang",
+      sub: "Epic · Ilocos Region",
+      body: `<h4>Background</h4>
+        <p>Biag ni Lam-ang is a well-known Ilocano epic and one of the most significant examples of pre-colonial Philippine literature. It originated in the Ilocos Region and was traditionally transmitted through oral storytelling, particularly through chanting and recitation by local storytellers. The epic was passed down from one generation to another before it was eventually recorded in written form during the Spanish colonial period. It contains elements of supernatural events, heroic adventures, family relationships, and traditional Ilocano beliefs, and its continued preservation demonstrates the importance of oral tradition in maintaining Filipino cultural heritage.</p>
+        <h4>Summary</h4>
+        <p>Don Juan and his wife Namongan lived in Nalbuan, now part of La Union. Before Lam-ang was born, Don Juan went to the mountains to punish a group of Igorot enemies. As soon as the baby boy popped out, he spoke and asked to be given the name Lam-ang, chose his godparents, and asked where his father was.</p>
+        <p>After nine months of waiting, Lam-ang decided to go look for his father. Along the way he dreamed that his father's head had been stuck on a pole by the Igorot. Furious, he rushed to their village and killed them all, sparing one so he could tell others of Lam-ang's greatness. Upon his triumphant return to Nalbuan, he was bathed by women in the Amburayan river — all the fish died from the dirt and odor of his body.</p>
+        <p>Lam-ang later set out to woo Ines Kannoyan of Calanutian, bringing along his white rooster and gray dog. He defeated a rival suitor, Sumarang, along the way. At Ines's house, his rooster's crow caused a nearby house to fall, and his dog's bark raised it again — impressing Ines's parents, who agreed to the marriage once Lam-ang met their dowry. It was tradition for a newly married man to swim for the rarang fish, but Lam-ang was swallowed by the water monster Berkakan. Ines had his bones retrieved and covered with cloth; his rooster crowed, his dog barked, and Lam-ang came back to life. He and Ines lived happily ever after with his rooster and dog.</p>
+        <h4>Importance / Significance</h4>
+        <p>Biag ni Lam-ang preserves the traditions, beliefs, values, and cultural practices of the Ilocano people before colonial rule, offering insight into how early Ilocano communities viewed family, courage, leadership, and the supernatural. It emphasizes bravery, loyalty, perseverance, respect for family, and heroism, and as one of the oldest surviving Philippine epics, it demonstrates the richness of oral storytelling and the creativity of early Filipino communities.</p>
+        <div class="blog-source">
+          <span class="bs-label">References</span>
+          <div>Summary: <a href="https://www.scribd.com/document/454670410/Summary-of-Biag-ni-Lam-ang" target="_blank" rel="noopener noreferrer">scribd.com/document/454670410</a></div>
+          <div>Full Story: <a href="https://www.scribd.com/document/324285759/Full-Story-Biag-Ni-Lam-Ang" target="_blank" rel="noopener noreferrer">scribd.com/document/324285759</a></div>
+          <div>Video: <a href="https://youtu.be/x8Z9opMdvgo" target="_blank" rel="noopener noreferrer">youtu.be/x8Z9opMdvgo</a></div>
+        </div>`
+    },
+    malakas: {
+      num: "Example 02",
+      title: "The Story of Malakas and Maganda",
+      sub: "Myth · Tagalog (Luzon)",
+      body: `<h4>Background</h4>
+        <p>The Story of Malakas and Maganda is a traditional Filipino creation myth explaining the origin of the first man and woman. It is commonly associated with the Tagalog people, though similar creation stories exist among other Filipino communities. Originally passed down through oral tradition, it reflects the worldview of early Filipinos regarding human origins, nature, and supernatural forces, and has become widely recognized as a representation of Filipino cultural identity and indigenous storytelling.</p>
+        <h4>Summary</h4>
+        <p>When the world began there was only the Sea and the Sky, and between them flew a huge Kite with nowhere to land. Tired of flying, the Kite stirred up a quarrel between the Sky and the Sea. The Sky hurled boulders down upon the Sea to restrain its fury, and these became the islands of the Philippines, causing the tides as the waters flowed back and forth. The Sky then had the Kite nest on one of the islands.</p>
+        <p>Around this time, the Land Breeze and Sea Breeze were married and had a child, Bamboo. When Bamboo floated against the sea and struck the Kite's feet, the angered bird pecked the bamboo until it split — and out came a man, Malakas (Strong One), and a woman, Maganda (Beautiful One). The animals decided the two should marry, and their many children eventually became all the different races of people. When the parents grew tired of their numerous children, Malakas struck at them, scattering them: those who hid in rooms became chiefs (Maharlikas), those in the walls became slaves (Alipins), those in the fireplace became the Negritos and Aetas, those who ran outside became free men (Timawas), and those who fled to sea eventually returned as the white foreigners.</p>
+        <h4>Importance / Significance</h4>
+        <p>The myth reflects the beliefs, values, and imagination of pre-colonial Filipinos, offering insight into how early communities explained human origins and understood the relationship between people, nature, and the spiritual world. It represents harmony and human connection, and as a traditional creation myth it contributes to the preservation of the country's indigenous cultural heritage.</p>
+        <div class="blog-source">
+          <span class="bs-label">References</span>
+          <div>Summary: <a href="https://www.scribd.com/document/147355708/Legend-of-Malakas-and-Maganda" target="_blank" rel="noopener noreferrer">scribd.com/document/147355708</a></div>
+          <div>Video: <a href="https://youtu.be/oGABs9fcmWg" target="_blank" rel="noopener noreferrer">youtu.be/oGABs9fcmWg</a></div>
+        </div>`
+    },
+    monkeyturtle: {
+      num: "Example 03",
+      title: "The Monkey and the Turtle",
+      sub: "Folktale / Folklore · Various regions of the Philippines",
+      body: `<h4>Background</h4>
+        <p>The Monkey and the Turtle is a traditional Filipino folktale originally passed down orally, with different versions told across the Philippines. Using animals as characters, it communicates lessons about human behavior in a way accessible to both children and adults. The tale was notably popularized in written form by José Rizal, who illustrated and wrote about a version of it in his youth, reflecting the traditional Filipino practice of storytelling to teach values.</p>
+        <h4>Summary</h4>
+        <p>A tortoise and a monkey found a banana tree floating in a river and agreed to divide and plant it. The monkey, as the stronger one, took the upper part with leaves, thinking it would grow faster; the tortoise took the ugly lower part with the roots. Days later, the monkey's half had died, while the tortoise's had grown fruit she could not reach. The monkey offered to climb up and pick the bananas for her — but once up the tree, he ate them all himself and refused to share.</p>
+        <p>Seeking revenge, the tortoise planted sharp snail shells around the tree and hid under a coconut shell. When the monkey came down, he was cut and bled, and went looking for the tortoise to punish her. He gave her a choice of death: pounded in a mortar, or thrown into the water. The tortoise, feigning fear of drowning, chose the mortar — so the monkey, thinking to punish her further, threw her into the river instead. The tortoise resurfaced swimming and laughing at the monkey she had outwitted.</p>
+        <h4>Importance / Significance</h4>
+        <p>The folktale represents the traditional use of animal characters and imaginative storytelling to communicate moral lessons, emphasizing honesty, patience, wisdom, resourcefulness, and fairness while illustrating the consequences of greed and dishonesty. As a folktale preserved through oral tradition, it contributes to the preservation of Filipino cultural heritage.</p>
+        <div class="blog-source">
+          <span class="bs-label">References</span>
+          <div>Summary: <a href="https://www.scribd.com/document/612415169/The-Monkey-and-the-Turtle-ELEMENTS-OF-A-STORY" target="_blank" rel="noopener noreferrer">scribd.com/document/612415169</a></div>
+          <div>Video: <a href="https://youtu.be/B2xDM-fIig0" target="_blank" rel="noopener noreferrer">youtu.be/B2xDM-fIig0</a></div>
+        </div>`
+    },
+    mariamakiling: {
+      num: "Example 04",
+      title: "The Legend of Maria Makiling",
+      sub: "Legend · Laguna, Luzon",
+      body: `<h4>Background</h4>
+        <p>The Legend of Maria Makiling is a traditional Filipino legend associated with Mount Makiling in Laguna. Originally transmitted through oral tradition, it exists in several local versions. Maria Makiling is portrayed as a beautiful, mysterious diwata (guardian spirit) of the mountain with a strong connection to nature, reflecting pre-colonial beliefs about supernatural beings who protect natural environments. The legend was later recorded and popularized in written literature, including a version published by José Rizal in 1890.</p>
+        <h4>Summary</h4>
+        <p>Maria Makiling was a diwata who lived on the mountain, beautiful and known for helping others — once turning a poor farmer's gift of ginger into gold out of kindness. She was wooed by three suitors: Captain Lara, a Spanish soldier; Joselito, a Spanish mestizo who dreamed of Spain; and Juan, a hardworking common farmer whom Maria secretly admired. Pressured to choose, she promised an answer by the next full moon — and named Juan.</p>
+        <p>The rejected Joselito and Captain Lara plotted against Juan. After a fire destroyed the Spanish cuartel, Captain Lara captured many Filipinos, and with Joselito's secret help, frightened prisoners into blaming Juan, who was innocent. Juan was publicly shot, crying out Maria's name as he died. Maria rushed down the mountain too late, and cursed the two men who had wronged him and any man who could not accept failure in love. Joselito fell gravely ill; Captain Lara was later killed by Filipino revolutionaries. From then on, Maria never let herself be seen again, and those who get lost on the mountain remember her curse — and her great love for Juan.</p>
+        <h4>Importance / Significance</h4>
+        <p>The legend preserves traditional Filipino beliefs about supernatural beings tied to nature and the close relationship between early communities and their environment. It conveys values such as kindness, generosity, honesty, gratitude, and respect for nature, and contributes to the preservation of Filipino cultural identity across generations.</p>
+        <div class="blog-source">
+          <span class="bs-label">References</span>
+          <div>Summary: <a href="https://www.scribd.com/document/328101828/The-Legend-of-Maria-Makiling" target="_blank" rel="noopener noreferrer">scribd.com/document/328101828</a></div>
+          <div>Video: <a href="https://youtu.be/4YQyQ2i-ez4" target="_blank" rel="noopener noreferrer">youtu.be/4YQyQ2i-ez4</a></div>
+        </div>`
+    },
+    leron: {
+      num: "Example 05",
+      title: "Leron, Leron Sinta",
+      sub: "Folksong · Tagalog region, particularly Luzon",
+      body: `<h4>Background</h4>
+        <p>Leron, Leron Sinta is a traditional Filipino folk song commonly associated with the Tagalog-speaking communities of Luzon. Its exact author and date of composition are unknown, since it was transmitted orally from generation to generation. It is believed to have roots in the agricultural traditions of rural Filipino communities, particularly fruit-gathering and harvest activities, and its lively, repetitive melody made it easy to remember and pass along, with different versions developing across communities over time.</p>
+        <h4>Summary</h4>
+        <p>The song describes a person gathering fruit from a tree while expressing affection toward another person, combining elements of work, nature, and courtship. The imagery of fruits, trees, and harvesting reflects the agricultural environment familiar to many early Filipino communities, and its cheerful tone made it suitable for communal singing and traditional performances.</p>
+        <h4>Importance / Significance</h4>
+        <p>Leron, Leron Sinta represents the Philippines' rich tradition of oral folk songs, preserving aspects of Filipino rural life and the connection between communities, nature, agriculture, and everyday activities. It shows how early Filipinos used music and oral performance to express emotions and relationships, and its continued popularity contributes to the preservation of the country's musical and literary heritage.</p>
+        <div class="blog-source">
+          <span class="bs-label">Reference</span>
+          <div>Video: <a href="https://youtu.be/firHRhLsprc" target="_blank" rel="noopener noreferrer">youtu.be/firHRhLsprc</a></div>
+        </div>`
+    }
+  };
+
+  const workCards = document.querySelectorAll('.precolonial-work');
+  const workModal = document.getElementById('workModal');
+  const workModalClose = document.getElementById('workModalClose');
+  const workModalEyebrow = document.getElementById('workModalEyebrow');
+  const workModalTitle = document.getElementById('workModalTitle');
+  const workModalSub = document.getElementById('workModalSub');
+  const workModalBody = document.getElementById('workModalBody');
+  let lastWorkCard = null;
+
+  function openWorkModal(card){
+    const data = PRECOLONIAL_WORKS[card.dataset.work];
+    if(!data) return;
+    lastWorkCard = card;
+    workModalEyebrow.textContent = 'Pre-Colonial · ' + data.num;
+    workModalTitle.textContent = data.title;
+    workModalSub.textContent = data.sub;
+    workModalBody.innerHTML = data.body;
+    workModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    workModalClose.focus();
+    workModal.querySelector('.modal-card').scrollTop = 0;
+  }
+  function closeWorkModal(){
+    workModal.classList.remove('open');
+    document.body.style.overflow = '';
+    if(lastWorkCard) lastWorkCard.focus();
+  }
+
+  workCards.forEach(card => {
+    card.addEventListener('click', () => openWorkModal(card));
+    card.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openWorkModal(card); }
+    });
+  });
+  workModalClose.addEventListener('click', closeWorkModal);
+  workModal.addEventListener('click', (e) => { if(e.target === workModal) closeWorkModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && workModal.classList.contains('open')) closeWorkModal();
+  });
+
+  const POEM_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Last Promise — a hyperpoem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Spectral+SC:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night-deep: #06070f;
+    --night: #0c1024;
+    --moonlight: #f2ecdd;
+    --violet: #7a6ea3;
+    --ash-rose: #b06a68;
+    --gold-vow: #cdab6d;
+    --star: #cfd3e6;
+    --ink-dim: rgba(242,236,221,0.62);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ background: var(--night-deep); }
+
+  body{
+    background: radial-gradient(ellipse 120% 60% at 50% -10%, var(--night) 0%, var(--night-deep) 55%);
+    color: var(--moonlight);
+    font-family: 'Spectral', serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    cursor: default;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ---------- Reading progress rail ---------- */
+  .progress-rail{
+    position: fixed;
+    right: 14px;
+    top: 8vh;
+    bottom: 8vh;
+    width: 2px;
+    background: rgba(242,236,221,0.08);
+    z-index: 40;
+    border-radius: 2px;
+  }
+  .progress-fill{
+    position:absolute;
+    left:0; top:0;
+    width: 100%;
+    height: 0%;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, var(--gold-vow), var(--ash-rose) 55%, var(--moonlight));
+    box-shadow: 0 0 8px rgba(205,171,109,0.5);
+    transition: height 0.05s linear;
+  }
+  @media (max-width: 720px){ .progress-rail{ display:none; } }
+
+  /* ---------- Starfield & atmosphere ---------- */
+  #stars{
+    position: fixed;
+    inset: -5% -5% -5% -5%;
+    z-index: 0;
+    pointer-events: none;
+    transition: transform 0.2s ease-out;
+  }
+  .star{
+    position:absolute;
+    width: 2px; height: 2px;
+    background: var(--star);
+    border-radius: 50%;
+    animation: twinkle linear infinite;
+  }
+  @keyframes twinkle{
+    0%, 100%{ opacity: var(--base-op, 0.25); }
+    50%{ opacity: var(--peak-op, 0.9); }
+  }
+
+  .shooting-star{
+    position:absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--moonlight);
+    border-radius: 50%;
+    filter: drop-shadow(0 0 6px rgba(242,236,221,0.9));
+    z-index: 1;
+    pointer-events: none;
+  }
+  .shooting-star::before{
+    content:"";
+    position:absolute;
+    top: 50%; right: 0;
+    width: 90px; height: 1px;
+    background: linear-gradient(to left, rgba(242,236,221,0.85), transparent);
+    transform: translateY(-50%);
+  }
+  @keyframes streak{
+    from{ transform: translate(0,0); opacity: 1; }
+    85%{ opacity: 1; }
+    to{ transform: translate(-380px, 220px); opacity: 0; }
+  }
+
+  #dust{
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .mote{
+    position:absolute;
+    bottom: -4vh;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--gold-vow);
+    opacity: 0;
+    filter: blur(0.2px);
+    animation: rise linear infinite;
+  }
+  @keyframes rise{
+    0%{ opacity: 0; transform: translate(0,0); }
+    10%{ opacity: var(--mote-op, 0.55); }
+    90%{ opacity: var(--mote-op, 0.55); }
+    100%{ opacity: 0; transform: translate(var(--drift, 20px), -108vh); }
+  }
+
+  /* cursor sparks */
+  .spark{
+    position: fixed;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--moonlight);
+    box-shadow: 0 0 6px 1px rgba(242,236,221,0.7);
+    pointer-events: none;
+    z-index: 60;
+    animation: sparkfade 0.9s ease-out forwards;
+  }
+  @keyframes sparkfade{
+    0%{ opacity: 0.9; transform: scale(1) translateY(0); }
+    100%{ opacity: 0; transform: scale(0.3) translateY(-14px); }
+  }
+
+  /* shatter shards for broken vows */
+  .shard{
+    position: fixed;
+    width: 5px; height: 5px;
+    background: var(--ash-rose);
+    border-radius: 1px;
+    pointer-events: none;
+    z-index: 60;
+  }
+
+  /* finale flash */
+  .finale-flash{
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 12vh, rgba(242,236,221,0.35), transparent 55%);
+    opacity: 0;
+  }
+  .finale-flash.pulse{
+    animation: flashpulse 1.6s ease-out;
+  }
+  @keyframes flashpulse{
+    0%{ opacity: 0; }
+    18%{ opacity: 1; }
+    100%{ opacity: 0; }
+  }
+  .rise-light{
+    position: fixed;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--moonlight);
+    box-shadow: 0 0 10px 2px rgba(242,236,221,0.7);
+    z-index: 31;
+    pointer-events: none;
+    animation: floatup 2.4s ease-out forwards;
+  }
+  @keyframes floatup{
+    0%{ opacity: 0; transform: translate(0,0) scale(0.6); }
+    12%{ opacity: 1; }
+    100%{ opacity: 0; transform: translate(var(--fx,0), -60vh) scale(1.1); }
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- Moon ---------- */
+  .moon-wrap{
+    position: fixed;
+    top: 8vh;
+    left: 50%;
+    z-index: 1;
+    width: 132px;
+    height: 132px;
+    pointer-events: none;
+    transition: transform 0.25s ease-out;
+  }
+  .moon-halo{
+    position:absolute;
+    inset: -36px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(242,236,221,0.16) 0%, rgba(242,236,221,0.05) 45%, transparent 72%);
+    filter: blur(2px);
+    transition: opacity 0.4s ease;
+  }
+  .moon-disc{
+    position:absolute;
+    inset:0;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--night-deep);
+    box-shadow: 0 0 1px rgba(242,236,221,0.3);
+    animation: breathe 7s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%, 100%{ box-shadow: 0 0 1px rgba(242,236,221,0.3), 0 0 18px rgba(242,236,221,0.05); }
+    50%{ box-shadow: 0 0 1px rgba(242,236,221,0.3), 0 0 26px rgba(242,236,221,0.14); }
+  }
+  .moon-light{
+    position:absolute;
+    inset:0;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 34% 30%, rgba(255,255,255,0.35), transparent 35%),
+      radial-gradient(circle at 60% 65%, rgba(0,0,0,0.10), transparent 40%),
+      radial-gradient(circle at 45% 45%, var(--moonlight) 0%, #e6dcc1 100%);
+  }
+  .moon-shadow{
+    position:absolute;
+    top: -8%;
+    left: -8%;
+    width: 116%;
+    height: 116%;
+    border-radius: 50%;
+    background: var(--night-deep);
+    box-shadow: 0 0 24px 10px var(--night-deep);
+    transition: transform 0.05s linear;
+  }
+  .moon-caption{
+    position:absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0.9rem;
+    font-family: 'Spectral', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .moon-caption.show{ opacity: 1; }
+
+  @media (max-width: 720px){
+    .moon-wrap{ width: 92px; height: 92px; top: 4.5vh; }
+    .moon-caption{ font-size: 0.64rem; }
+  }
+
+  /* ---------- Content ---------- */
+  .content{
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 46vh 1.6rem 14rem;
+  }
+
+  header.title-block{
+    text-align:center;
+    margin-bottom: 14vh;
+  }
+  .kicker{
+    font-family: 'Spectral SC', serif;
+    font-style: italic;
+    font-size: 0.72rem;
+    letter-spacing: 0.24em;
+    text-transform: lowercase;
+    color: var(--violet);
+    margin-bottom: 1rem;
+  }
+  h1{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    letter-spacing: 0.01em;
+    color: var(--moonlight);
+    line-height: 1.1;
+  }
+  h1 .promise-word{
+    position: relative;
+    cursor: default;
+    transition: text-shadow 0.4s ease;
+  }
+  h1 .promise-word:hover{
+    text-shadow: 0 0 18px rgba(205,171,109,0.55);
+  }
+  .subhint{
+    margin-top: 1.1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    color: var(--ink-dim);
+    font-style: italic;
+  }
+
+  .stanza{
+    text-align: center;
+    font-size: clamp(1.02rem, 2.6vw, 1.22rem);
+    line-height: 1.95;
+    color: rgba(242,236,221,0.86);
+    margin-bottom: 12vh;
+  }
+  .stanza.small-gap{ margin-bottom: 8vh; }
+  .stanza .pline{
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(3px);
+    transition: opacity 0.75s ease, transform 0.75s ease, filter 0.75s ease, text-shadow 0.3s ease;
+    transition-delay: calc(var(--i, 0) * 110ms);
+  }
+  .stanza.visible .pline{
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  .stanza .pline:hover{
+    text-shadow: 0 0 12px rgba(242,236,221,0.35);
+  }
+  .stanza em{
+    font-family:'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.12em;
+    color: var(--moonlight);
+  }
+
+  /* ---------- Vow words ---------- */
+  .vows{
+    text-align:center;
+    margin: 2vh 0 12vh;
+  }
+  .vows-hint{
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    font-style: italic;
+    margin-bottom: 1.6rem;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  .vows-hint.visible{ opacity: 0.75; }
+
+  .vow{
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--gold-vow);
+    text-shadow: 0 0 14px rgba(205,171,109,0.35);
+    cursor: pointer;
+    position: relative;
+    margin: 0.9rem 1rem;
+    padding: 0.2rem 0.1rem;
+    transition: color 0.5s ease, text-shadow 0.5s ease, transform 0.25s ease;
+    user-select: none;
+  }
+  .vow::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    bottom: 0.18em;
+    height: 2px;
+    background: var(--ash-rose);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+  }
+  .vow .whisper{
+    display:block;
+    font-family:'Spectral', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.42em;
+    letter-spacing: 0.06em;
+    color: var(--ash-rose);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+    text-shadow: none;
+  }
+  .vow.breaking{ animation: shake 0.4s ease; }
+  @keyframes shake{
+    0%, 100%{ transform: translateX(0); }
+    20%{ transform: translateX(-4px) rotate(-2deg); }
+    40%{ transform: translateX(4px) rotate(2deg); }
+    60%{ transform: translateX(-3px) rotate(-1deg); }
+    80%{ transform: translateX(3px) rotate(1deg); }
+  }
+  .vow.broken{
+    color: rgba(176,106,104,0.55);
+    text-shadow: none;
+  }
+  .vow.broken::after{ transform: scaleX(1); }
+  .vow.broken .whisper{ opacity: 1; transform: translateY(0); }
+  .vow:hover{ color: #e2c78c; transform: translateY(-2px); }
+  .vow.broken:hover{ color: rgba(176,106,104,0.75); }
+
+  /* ---------- Closing ---------- */
+  .closing{
+    text-align:center;
+    margin-top: 6vh;
+  }
+  .closing .line{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.4rem, 4vw, 1.9rem);
+    line-height: 1.7;
+    color: var(--moonlight);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 1.1s ease, transform 1.1s ease;
+  }
+  .closing .line.visible{ opacity: 1; transform: translateY(0); }
+  .closing .line + .line{ margin-top: 0.6rem; }
+  .closing .line.dissolve{
+    animation: dissolve 1.8s ease forwards;
+  }
+  @keyframes dissolve{
+    0%{ opacity: 1; filter: blur(0); }
+    50%{ opacity: 0.35; filter: blur(1.5px); }
+    100%{ opacity: 1; filter: blur(0); }
+  }
+
+  .letgo-btn{
+    margin-top: 4rem;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    background: transparent;
+    border: 1px solid rgba(242,236,221,0.28);
+    color: var(--ink-dim);
+    font-family: 'Spectral SC', serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    padding: 0.85rem 1.8rem;
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 1s ease, transform 1s ease, border-color 0.4s ease, color 0.4s ease, background 0.4s ease;
+  }
+  .letgo-btn.visible{ opacity: 1; transform: translateY(0); }
+  .letgo-btn:hover{ border-color: var(--moonlight); color: var(--moonlight); }
+  .letgo-btn.released{
+    background: rgba(242,236,221,0.06);
+    border-color: rgba(242,236,221,0.5);
+    color: var(--moonlight);
+  }
+
+  .release-note{
+    margin-top: 1.6rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--ink-dim);
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    min-height: 1.2em;
+  }
+  .release-note.visible{ opacity: 1; }
+
+  .again-link{
+    display:inline-block;
+    margin-top: 1.4rem;
+    font-family: 'Spectral', serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 1s ease, color 0.3s ease;
+  }
+  .again-link.visible{ opacity: 0.75; }
+  .again-link:hover{ color: var(--moonlight); opacity: 1; }
+
+  footer{
+    position: relative;
+    z-index: 2;
+    text-align:center;
+    padding-bottom: 4rem;
+    font-family: 'Spectral SC', serif;
+    font-style: italic;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    color: rgba(242,236,221,0.3);
+  }
+
+  :focus-visible{
+    outline: 1px solid var(--gold-vow);
+    outline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-rail" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+
+<div id="stars"></div>
+<div id="dust"></div>
+<div class="finale-flash" id="finaleFlash"></div>
+
+<div class="moon-wrap" id="moonWrap" aria-hidden="true">
+  <div class="moon-halo"></div>
+  <div class="moon-disc">
+    <div class="moon-light"></div>
+    <div class="moon-shadow" id="moonShadow"></div>
+  </div>
+  <div class="moon-caption" id="moonCaption">full — the way I loved you</div>
+</div>
+
+<div class="content">
+
+  <header class="title-block">
+    <p class="kicker">a hyperpoem</p>
+    <h1><span class="promise-word">The Last Promise</span></h1>
+    <p class="subhint">scroll slowly. the moon is reading along with you.</p>
+  </header>
+
+  <p class="stanza">I loved you<br>like <em>the moon loves the night</em>—<br>quietly,<br>completely,<br>without asking for anything in return.</p>
+
+  <p class="stanza">You held my heart<br>with gentle hands,<br>and I believed<br>you would never let it fall.</p>
+
+  <p class="stanza small-gap">But you did.<br>Not by leaving,<br>but by <em>staying</em><br>while your heart<br>belonged somewhere else.</p>
+
+  <div class="vows">
+    <p class="vows-hint">— each one, once believed. touch a promise to break it —</p>
+    <span class="vow" tabindex="0" role="button" aria-pressed="false">Forever.<span class="whisper">(a lie)</span></span>
+    <span class="vow" tabindex="0" role="button" aria-pressed="false">Only you.<span class="whisper">(a lie)</span></span>
+    <span class="vow" tabindex="0" role="button" aria-pressed="false">I swear.<span class="whisper">(a lie)</span></span>
+  </div>
+
+  <p class="stanza">Funny how easily<br><em>forever</em> becomes a lie<br>when whispered<br>to the wrong person.</p>
+
+  <p class="stanza">I blamed myself<br>for every silence,<br>every distance,<br>every change.</p>
+
+  <p class="stanza small-gap">Until I realized<br>I wasn't hard to love.<br>You simply chose<br><em>not to</em>.</p>
+
+  <p class="stanza">And now,<br>when I think of us,<br>I don't remember<br>the way you loved me.</p>
+
+  <p class="stanza">I remember<br>the moment I learned<br>that love can be real<br>and still end in betrayal.</p>
+
+  <div class="closing">
+    <p class="line">I loved you.</p>
+    <p class="line">You betrayed me.</p>
+    <p class="line">And somewhere between<br>those two truths,</p>
+    <p class="line">I learned<br>to let you go.</p>
+
+    <button class="letgo-btn" id="letGoBtn">let go</button>
+    <p class="release-note" id="releaseNote"></p>
+    <span class="again-link" id="againLink" tabindex="0" role="button">read it again</span>
+  </div>
+
+</div>
+
+<footer>the moon waxes again, quietly, whether or not you were watching</footer>
+
+<script>
+  // ================= Starfield =================
+  const starsEl = document.getElementById('stars');
+  const STAR_COUNT = 90;
+  const starNodes = [];
+  for(let i=0; i<STAR_COUNT; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() < 0.15 ? 3 : 2;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.top = Math.random()*100 + 'vh';
+    s.style.setProperty('--base-op', (0.12 + Math.random()*0.25).toFixed(2));
+    s.style.setProperty('--peak-op', (0.55 + Math.random()*0.4).toFixed(2));
+    s.style.animationDuration = (2.5 + Math.random()*4).toFixed(2) + 's';
+    s.style.animationDelay = (Math.random()*4).toFixed(2) + 's';
+    starsEl.appendChild(s);
+    starNodes.push(s);
+  }
+
+  // ================= Ambient dust motes =================
+  const dustEl = document.getElementById('dust');
+  const MOTE_COUNT = 22;
+  for(let i=0; i<MOTE_COUNT; i++){
+    const m = document.createElement('div');
+    m.className = 'mote';
+    m.style.left = Math.random()*100 + 'vw';
+    m.style.setProperty('--drift', (Math.random()*60 - 30).toFixed(0) + 'px');
+    m.style.setProperty('--mote-op', (0.3 + Math.random()*0.4).toFixed(2));
+    m.style.animationDuration = (10 + Math.random()*14).toFixed(1) + 's';
+    m.style.animationDelay = (-Math.random()*20).toFixed(1) + 's';
+    dustEl.appendChild(m);
+  }
+
+  // ================= Occasional shooting star =================
+  function spawnShootingStar(){
+    const s = document.createElement('div');
+    s.className = 'shooting-star';
+    const startX = 55 + Math.random()*40;
+    const startY = 5 + Math.random()*25;
+    s.style.left = startX + 'vw';
+    s.style.top = startY + 'vh';
+    s.style.animation = 'streak ' + (1.1 + Math.random()*0.6).toFixed(2) + 's ease-out forwards';
+    starsEl.appendChild(s);
+    setTimeout(() => s.remove(), 2000);
+  }
+  function scheduleShootingStar(){
+    const delay = 7000 + Math.random()*11000;
+    setTimeout(() => { spawnShootingStar(); scheduleShootingStar(); }, delay);
+  }
+  scheduleShootingStar();
+
+  // ================= Cursor stardust trail =================
+  const fineCursor = window.matchMedia('(pointer: fine)').matches;
+  let lastSpark = 0;
+  if(fineCursor){
+    document.addEventListener('mousemove', (e) => {
+      const now = performance.now();
+      if(now - lastSpark < 55) return;
+      lastSpark = now;
+      if(Math.random() > 0.55) return;
+      const sp = document.createElement('div');
+      sp.className = 'spark';
+      sp.style.left = (e.clientX + (Math.random()*10-5)) + 'px';
+      sp.style.top = (e.clientY + (Math.random()*10-5)) + 'px';
+      document.body.appendChild(sp);
+      setTimeout(() => sp.remove(), 950);
+    });
+  }
+
+  // ================= Mouse parallax on stars + moon =================
+  const moonWrap = document.getElementById('moonWrap');
+  if(fineCursor){
+    window.addEventListener('mousemove', (e) => {
+      const px = (e.clientX / window.innerWidth - 0.5);
+      const py = (e.clientY / window.innerHeight - 0.5);
+      starsEl.style.transform = 'translate(' + (px*-14) + 'px,' + (py*-10) + 'px)';
+      moonWrap.style.transform = 'translateX(calc(-50% + ' + (px*10) + 'px)) translateY(' + (py*6) + 'px)';
+    });
+  }
+
+  // ================= Stanza line-splitting for cascading reveal =================
+  document.querySelectorAll('.stanza').forEach(st => {
+    const parts = st.innerHTML.split('<br>');
+    st.innerHTML = parts.map((part, i) =>
+      '<span class="pline" style="--i:' + i + '">' + part.trim() + '</span>'
+    ).join('<br>');
+  });
+
+  // ================= Reveal on scroll =================
+  const revealTargets = document.querySelectorAll('.stanza, .vows-hint, .closing .line');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.35 });
+  revealTargets.forEach(el => io.observe(el));
+
+  const letGoBtn = document.getElementById('letGoBtn');
+  const btnIo = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) letGoBtn.classList.add('visible'); });
+  }, { threshold: 0.6 });
+  btnIo.observe(letGoBtn);
+
+  // ================= Moon phase + progress tied to scroll =================
+  const moonShadow = document.getElementById('moonShadow');
+  const moonCaption = document.getElementById('moonCaption');
+  const progressFill = document.getElementById('progressFill');
+  const captions = [
+    { at: 0.00, text: 'full — the way I loved you' },
+    { at: 0.28, text: 'waning — while your heart was elsewhere' },
+    { at: 0.50, text: 'new — the dark I could not see' },
+    { at: 0.72, text: 'still dark — remembering, not forgetting' },
+    { at: 0.92, text: 'a sliver returning — letting go' }
+  ];
+  let currentCaption = -1;
+
+  function lerp(a,b,t){ return a + (b-a)*t; }
+  function easeInOut(t){ return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function updateMoon(){
+    const doc = document.documentElement;
+    const scrollTop = window.scrollY || doc.scrollTop;
+    const max = (doc.scrollHeight - window.innerHeight) || 1;
+    const phase = Math.min(1, Math.max(0, scrollTop / max));
+
+    progressFill.style.height = (phase*100) + '%';
+
+    const r = (moonShadow.parentElement.offsetWidth || 132) / 2;
+    let offset;
+    if(phase <= 0.5){
+      const t = phase / 0.5;
+      offset = lerp(-2.1*r, 0, easeInOut(t));
+    } else {
+      const t = (phase - 0.5) / 0.5;
+      offset = lerp(0, -0.62*r, easeInOut(t));
+    }
+    moonShadow.style.transform = 'translateX(' + offset + 'px)';
+
+    const halo = document.querySelector('.moon-halo');
+    const haloOpacity = phase <= 0.5
+      ? lerp(1, 0.15, phase/0.5)
+      : lerp(0.15, 0.55, (phase-0.5)/0.5);
+    halo.style.opacity = haloOpacity;
+
+    let idx = 0;
+    for(let i=0;i<captions.length;i++){ if(phase >= captions[i].at) idx = i; }
+    if(idx !== currentCaption){
+      currentCaption = idx;
+      moonCaption.classList.remove('show');
+      setTimeout(() => {
+        moonCaption.textContent = captions[idx].text;
+        moonCaption.classList.add('show');
+      }, 220);
+    }
+  }
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if(!ticking){
+      window.requestAnimationFrame(() => { updateMoon(); ticking = false; });
+      ticking = true;
+    }
+  });
+  window.addEventListener('resize', updateMoon);
+  updateMoon();
+
+  // ================= Vow words: click to shatter =================
+  function spawnShards(x, y){
+    const count = 9;
+    for(let i=0;i<count;i++){
+      const sh = document.createElement('div');
+      sh.className = 'shard';
+      sh.style.left = x + 'px';
+      sh.style.top = y + 'px';
+      const angle = (Math.PI * 2 * i / count) + (Math.random()*0.6 - 0.3);
+      const dist = 40 + Math.random()*50;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist - 20;
+      const rot = (Math.random()*360).toFixed(0);
+      document.body.appendChild(sh);
+      sh.animate([
+        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+        { transform: 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rot + 'deg)', opacity: 0 }
+      ], { duration: 700 + Math.random()*300, easing: 'cubic-bezier(.2,.8,.3,1)' });
+      setTimeout(() => sh.remove(), 1100);
+    }
+  }
+
+  document.querySelectorAll('.vow').forEach(v => {
+    const toggle = () => {
+      const wasBroken = v.classList.contains('broken');
+      v.classList.toggle('broken');
+      v.setAttribute('aria-pressed', v.classList.contains('broken') ? 'true' : 'false');
+      if(!wasBroken){
+        const rect = v.getBoundingClientRect();
+        spawnShards(rect.left + rect.width/2, rect.top + rect.height/2);
+        v.classList.add('breaking');
+        setTimeout(() => v.classList.remove('breaking'), 420);
+      }
+    };
+    v.addEventListener('click', toggle);
+    v.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+    });
+  });
+
+  // ================= Let go: finale =================
+  const releaseNote = document.getElementById('releaseNote');
+  const againLink = document.getElementById('againLink');
+  const finaleFlash = document.getElementById('finaleFlash');
+  const notes = [
+    "you don't have to carry it anymore.",
+    "it's out of your hands now.",
+    "the moon still rises without them."
+  ];
+
+  function riseLights(){
+    const moonRect = moonWrap.getBoundingClientRect();
+    for(let i=0;i<16;i++){
+      const l = document.createElement('div');
+      l.className = 'rise-light';
+      const startX = moonRect.left + moonRect.width/2 + (Math.random()*40 - 20);
+      const startY = moonRect.top + moonRect.height/2 + (Math.random()*20 - 10);
+      l.style.left = startX + 'px';
+      l.style.top = startY + 'px';
+      l.style.setProperty('--fx', (Math.random()*140 - 70) + 'px');
+      l.style.animationDelay = (Math.random()*0.5) + 's';
+      document.body.appendChild(l);
+      setTimeout(() => l.remove(), 3000);
+    }
+  }
+
+  letGoBtn.addEventListener('click', () => {
+    if(letGoBtn.classList.contains('released')) return;
+    letGoBtn.classList.add('released');
+    letGoBtn.textContent = 'let go ✦';
+    releaseNote.textContent = notes[Math.floor(Math.random()*notes.length)];
+    releaseNote.classList.add('visible');
+    againLink.classList.add('visible');
+
+    finaleFlash.classList.remove('pulse');
+    void finaleFlash.offsetWidth;
+    finaleFlash.classList.add('pulse');
+    riseLights();
+
+    document.querySelectorAll('.closing .line').forEach((el, i) => {
+      setTimeout(() => {
+        el.classList.add('dissolve');
+        setTimeout(() => el.classList.remove('dissolve'), 1800);
+      }, i * 150);
+    });
+  });
+
+  function resetPoem(){
+    document.querySelectorAll('.vow.broken').forEach(v => {
+      v.classList.remove('broken');
+      v.setAttribute('aria-pressed', 'false');
+    });
+    letGoBtn.classList.remove('released');
+    letGoBtn.textContent = 'let go';
+    releaseNote.classList.remove('visible');
+    releaseNote.textContent = '';
+    againLink.classList.remove('visible');
+    document.querySelectorAll('.visible').forEach(el => {
+      if(el !== document.body) el.classList.remove('visible');
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  againLink.addEventListener('click', resetPoem);
+  againLink.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); resetPoem(); }
+  });
+<\/script>
+
+</body>
+</html>
+`;
+</script>
+
+</body>
+</html>
